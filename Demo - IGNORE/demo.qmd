@@ -1,0 +1,139 @@
+---
+title: "Demo"
+format: html
+---
+# IGNORE
+
+
+```{r}
+#| label: setup
+#| message: false
+
+library(terra)
+library(tidyverse)
+library(tidyterra)
+library(moveHMM)
+theme_set(theme_bw())
+```
+
+```{r}
+#| label: load-data
+
+schools <- rast("map.tif") # Load up the "map" I made of my environmental covariate
+# Define the coordinate system I am using (track data will have x & y values )
+ext(schools) <- ext(0,1,0,1) 
+crs(schools) <- "epsg:4326" # A 3D representation of the Earth for minimal distortions
+plot(schools) # Shows the amount of red, green, blue, and alpha level
+
+schools <- schools[[1]] # Collapse it to just one scale.
+```
+
+```{r}
+#| label: map-trials
+map <- rast("Recolored_map.tiff")
+ext(map) <- ext(0,10,0,5) 
+crs(map) <- "epsg:4326"
+map <- flip(map, direction = "vertical") # Image is flipped if I don't do this 
+plot(map)
+
+pods <- map[[1]]
+plot(pods)
+
+```
+
+```{r}
+#| label: load-track
+
+track_df <- read_csv("Tracks.csv") # Load the fake tracks into a dataframe for HMM
+# Make the tracks into a vector with the environmental data  
+track_sp <- vect(track_df,
+                 geom = c("x", "y"),
+                 crs = crs(schools))
+track_lines <- as.lines(track_sp) # Connect the points for visualization
+
+ggplot() +
+  geom_spatraster(data = map[[3]]) 
+  geom_spatvector(data = track_lines,
+                  col = "red")
+```
+
+```{r}
+#| label: track-trials
+track_df <- read_csv("Red_Booby_Tracks.csv") # Load the fake tracks into a dataframe for HMM
+# Make the tracks into a vector with the environmental data  
+track_sp <- vect(track_df,
+                 geom = c("x", "y"),
+                 crs = crs(pods))
+track_lines <- as.lines(track_sp) # Connect the points for visualization
+
+ggplot() +
+  geom_spatraster(data = map[[3]]) +
+  geom_spatvector(data = track_lines,
+                  col = "red")
+```
+
+```{r}
+#| label: prepare-data
+
+# Prepare the data for model fitting
+track_prepped <- prepData(track_df, coordNames = c("x", "y"))
+
+```
+
+```{r}
+#| label: viz-metrics
+
+# Visualize distribution of step lengths
+ggplot(track_prepped, aes(step)) +
+  geom_histogram()
+# Transit - mean: 35. dev: 10
+# Forage - mean: 15. dev: 5 
+
+# Visualize distribution of turning angles
+ggplot(track_prepped, aes(angle)) +
+  geom_histogram()
+
+# mean: 0, 0 
+# Deviation - transit: 1. forage: 2
+```
+
+| Parameter           | Forage | Transit |
+|---------------------|--------|---------|
+| Step mean           | 35     | 15      |
+| Step s.d.           | 10     | 5       |
+| Angle mean          | 0      | 0       |
+| Angle concentration | 1      | 2       |
+
+```{r}
+#| label: fit-hmm
+
+# Fit a 2-state HMM to the track
+track_hmm <- fitHMM(track_prepped,
+                    nbState = 2,
+                    stepPar0 = c(35, 15, 10, 5),
+                    anglePar0 = c(0, 0, 1, 2))
+
+```
+
+```{r}
+#| label: viz-hmm
+
+# Visualize the components of the HMM
+plot(track_hmm, ask = FALSE)
+```
+
+```{r}
+#| label: refine-model
+
+# First, extract the frontal intensity at the track locations
+track_pods <- terra::extract(pods, track_sp)
+track_prepped$pods <- track_pods[,2]
+
+# Fit 2-state hidden markov model, incorporating the pod proximity
+track_hmm2 <- fitHMM(track_prepped,
+                    nbState = 2,
+                    formula = ~ pods,
+                    stepPar0 = c(35, 15, 10, 5),
+                    anglePar0 = c(0, 0, 1, 2))
+
+```
