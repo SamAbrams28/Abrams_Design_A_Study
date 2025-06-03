@@ -1,6 +1,7 @@
 ---
 title: "Design a Study"
 format: html
+bibliography: references.bib
 ---
 
 ```{r}
@@ -19,22 +20,26 @@ theme_set(theme_minimal())
 
 ## Context
 
+Forating groups of pelagic predators drive schools of prey fish to the surface. Many sea birds take advantage of this to forage near the ocean's surface. One such bird is the Red-footed Booby [@felis2019].
+
+The subspecies *Sula sula rubripes* is the most abundant Booby in the Hawaiian islands. They reside mainly on the Northwestern Hawaiian islands. I chose to start my tracks at the western end of Oahu to align with the habitat of a noted pelagic predator, the spotted dolphin.
+
+Spotted dolphins are often found between Hawaiian islands and stay further from shore. They hunt in pods of highly variable numbers.
+
+Among Booby species, Red-footed Boobies have uniquely far ranges. The length of track I drew/its distance from the coast is realistic for a shorter Red-footed Booby foraging trip.
+
 ## Research Question & Hypothesis
 
 **Research question:** Do red-footed boobies hunt near pods of dolphins?
 
-**Hypothesis:** Since hunting pods of spotted dolphins drive pelagic prey toward the ocean surface, if red-footed boobies associate with spotted dolphins for foraging, then red-footed boobies will be in the foraging state when near dolphin pods.
+**Hypothesis:** Since hunting pods of spotted dolphins drive pelagic prey toward the ocean surface, if Red-footed boobies associate with spotted dolphins for foraging, then Red-footed Boobies will be in the foraging state when near dolphin pods.
 
 ## The Movement Ecology Scientific Model & the Statistical Model
 
 -   Proximity to a pod of dolphins is an external state that influences the bird's decision of how they should move — whether they should stay in their current state or switch.
-    -   The red-footed booby isn't necessarily seeing the pod of dolphins, rather picking up on the effects of pelagic predators (like increased prey fish at the water surface).
+    -   The Red-footed Booby isn't necessarily seeing the pod of dolphins, rather picking up on the effects of pelagic predators (like increased prey fish at the water surface).
 -   By observing the movement path (simulated tracks), it is possible to reconstruct the bird's motion capacity; determining whether they were in the "forage" or "transit" state.
--   In combination with the external state (pod proximity map), it is possible to understand how my chosen environmental covariate affects the red-footed booby's movement path using hidden state decoding/transition rate probabilites.
-
-M.1: Explain why we use models in science
-
-Relation to statistical model
+-   In combination with the external state (pod proximity map), it is possible to understand how my chosen environmental covariate affects the red-footed booby's movement path using hidden state decoding/transition rate probabilities.
 
 # Methods
 
@@ -42,7 +47,7 @@ Relation to statistical model
 
 I started with a 10 inch by 5 inch canvas in google drawings.
 
-I created a "map" ([@fig-colorful-map]) of the Oahu-Kauai channel use outlines of the islands that contain no red. That way, I was able use the islands to create a map and tracks (i.e., have a starting point that's on land, flying only at sea) without affecting the environmental covariate data is measured using amount of red ([@fig-pod-map]).
+I created a "map" ([@fig-colorful-map]) of the Oahu-Kauai channel using silhouettes of the islands that contain no red. That way, I was able use the islands to create a map and tracks (i.e., have a starting point that's on land, flying only at sea) without affecting the environmental covariate data is measured using amount of red ([@fig-pod-map]).
 
 ![My map of the Oahu-Kauai Channel](Recolored_map.png){#fig-colorful-map}
 
@@ -73,7 +78,7 @@ plot(pods)
 
 Similarly, I also customized the blue values of the concentric circles (20, 40, 60, 80, 100) to make the track map ([@fig-load-tracks]).
 
-Next, on a copy of this map, I drew out tracks using the line tool. Finally, I estimated the points where my track lines meet to the nearest 0.05 inch. In google drawings, 0 is at the top left of the page instead of the bottom, so I had to flip all of my values by subtracting the "reverse y" from 5 to get final y values.
+Next, on a copy of this map, I drew out tracks using the line tool. Finally, I estimated the points where my track lines meet to the nearest 0.05 inch. In google drawings, 0 is at the top left of the page instead of the bottom, so I had to flip all of my values by subtracting the "reverse y" from 5 (my map's vertical extent) to get final y values.
 
 ```{r}
 #| label: fig-load-tracks
@@ -99,17 +104,13 @@ ggplot() +
 
 ## Model Construction
 
-### Model Justification
-
-Why HMM works better than decision trees/random forests:
+### Why HMM instead of RF?
 
 Random forests are a type of supervised learning, meaning they are trained to differentiate between classes using ***labelled*** data sets.
 
-To label certain parts of the red-footed booby track data as "forage" and others as "transit", tangible (e.g., visual) observations of the bird diving for prey (or observations of some other behavior that would allow for definitive state classification) are needed. Unambiguous observations of foraging behavior would allow for the direct association of movement path metrics and state labels. However, labeling data is not available for this data set.
+To label certain parts of the red-footed booby track data as "forage" and others as "transit", tangible (e.g., visual) observations of the bird diving for prey (or observations of some other behavior that would allow for definitive state classification) are needed. Unambiguous observations of foraging behavior would allow for the direct association of movement path metrics and state labels. However, labelled data is not available for this data set.
 
-Instead, transit and forage are ***hidden*** states. A model that can classify states without any labelled training data using only estimated parameter is needed to classify this data. The model must immediately figure out aspects of that data that the researchers do not know, the hidden states. So, for this data a ***Hidden*** Markov Model is the best fit.
-
-M.2: Compare and contrast modeling approaches for biologging data
+Instead, transit and forage are ***hidden*** states. A model that can classify states without any labelled training data using only estimated parameters is needed to classify this data. The model must immediately figure out aspects of the data that the researchers do not know, the hidden states. So, for this data, a ***Hidden*** Markov Model is the best fit.
 
 ### Model fitting
 
@@ -157,7 +158,7 @@ State 1 corresponds to transit. State 2 corresponds to foraging.
 #| - "Emmision distribution (step length), hidden state indicated by color"
 #| - "Emmision distribution (turning angle), hidden state indicated by color"
 #| - "Transition rate probabilities (transition rate 'matrix')"
-#| - "Data: tracks color-coded by hidden state"
+#| - "Data, tracks color-coded by hidden state"
 
 # First, extract the pod proximity at the track locations and attach the proximity data to the track data. 
 track_pods <- terra::extract(pods, track_sp)
@@ -179,6 +180,6 @@ Does the figure support or contradict my hypothesis?
 
 M.3: Fit models to data and interpret the results
 
-The HMM output shows that red-footed boobies forage more near dolphin pods, supporting the hypothesis that they feed in association with spotted dolphins. As seen in [@fig-fit-hmm-3], the bird's probability of staying in the transit state or switching into it plummets as it get close to a dolphin pod. On the other hand, when the bird is near a dolphin pod, it has a very high probability of being in the foraging state (i.e., switching into or staying into it).
+The HMM output shows that the bird forages more near dolphin pods, supporting the hypothesis that Red-footed Boobies feed in association with spotted dolphins. As seen in [@fig-fit-hmm-3], the bird's probability of staying in the transit state or switching into it plummets as it get close to a dolphin pod. On the other hand, when the bird is near a dolphin pod, it has a very high probability of being in the foraging state (i.e., switching into or staying into it).
 
 Additionally, comparing [@fig-fit-hmm-4] and [@fig-load-tracks] indicates that two of the bird's three foraging periods happen in close proximity to a dolphin pod.

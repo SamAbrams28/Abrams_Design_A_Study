@@ -54,7 +54,27 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="Design_a_Study_files/libs/clipboard/clipboard.min.js"></script>
@@ -100,21 +120,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>Introduction</h1>
 <section id="context" class="level2">
 <h2 class="anchored" data-anchor-id="context">Context</h2>
+<p>Forating groups of pelagic predators drive schools of prey fish to the surface. Many sea birds take advantage of this to forage near the ocean’s surface. One such bird is the Red-footed Booby <span class="citation" data-cites="felis2019">(<a href="#ref-felis2019" role="doc-biblioref">Felis, Czapanskiy, and Adams 2019</a>)</span>.</p>
+<p>The subspecies <em>Sula sula rubripes</em> is the most abundant Booby in the Hawaiian islands. They reside mainly on the Northwestern Hawaiian islands. I chose to start my tracks at the western end of Oahu to align with the habitat of a noted pelagic predator, the spotted dolphin.</p>
+<p>Spotted dolphins are often found between Hawaiian islands and stay further from shore. They hunt in pods of highly variable numbers.</p>
+<p>Among Booby species, Red-footed Boobies have uniquely far ranges. The length of track I drew/its distance from the coast is realistic for a shorter Red-footed Booby foraging trip.</p>
 </section>
 <section id="research-question-hypothesis" class="level2">
 <h2 class="anchored" data-anchor-id="research-question-hypothesis">Research Question &amp; Hypothesis</h2>
 <p><strong>Research question:</strong> Do red-footed boobies hunt near pods of dolphins?</p>
-<p><strong>Hypothesis:</strong> Since hunting pods of spotted dolphins drive pelagic prey toward the ocean surface, if red-footed boobies associate with spotted dolphins for foraging, then red-footed boobies will be in the foraging state when near dolphin pods.</p>
+<p><strong>Hypothesis:</strong> Since hunting pods of spotted dolphins drive pelagic prey toward the ocean surface, if Red-footed boobies associate with spotted dolphins for foraging, then Red-footed Boobies will be in the foraging state when near dolphin pods.</p>
 </section>
 <section id="the-movement-ecology-scientific-model-the-statistical-model" class="level2">
 <h2 class="anchored" data-anchor-id="the-movement-ecology-scientific-model-the-statistical-model">The Movement Ecology Scientific Model &amp; the Statistical Model</h2>
 <ul>
 <li>Proximity to a pod of dolphins is an external state that influences the bird’s decision of how they should move — whether they should stay in their current state or switch.
 <ul>
-<li>The red-footed booby isn’t necessarily seeing the pod of dolphins, rather picking up on the effects of pelagic predators (like increased prey fish at the water surface).</li>
+<li>The Red-footed Booby isn’t necessarily seeing the pod of dolphins, rather picking up on the effects of pelagic predators (like increased prey fish at the water surface).</li>
 </ul></li>
 <li>By observing the movement path (simulated tracks), it is possible to reconstruct the bird’s motion capacity; determining whether they were in the “forage” or “transit” state.</li>
-<li>In combination with the external state (pod proximity map), it is possible to understand how my chosen environmental covariate affects the red-footed booby’s movement path using hidden state decoding/transition rate probabilites.</li>
+<li>In combination with the external state (pod proximity map), it is possible to understand how my chosen environmental covariate affects the red-footed booby’s movement path using hidden state decoding/transition rate probabilities.</li>
 </ul>
 <p>M.1: Explain why we use models in science</p>
 <p>Relation to statistical model</p>
@@ -199,8 +223,8 @@ Figure&nbsp;3: Map of the channel with my simulated tracks
 </div>
 </div>
 </section>
-<section id="modeling" class="level2">
-<h2 class="anchored" data-anchor-id="modeling">Modeling</h2>
+<section id="model-construction" class="level2">
+<h2 class="anchored" data-anchor-id="model-construction">Model Construction</h2>
 <section id="model-justification" class="level3">
 <h3 class="anchored" data-anchor-id="model-justification">Model Justification</h3>
 <p>Why HMM works better than decision trees/random forests:</p>
@@ -343,9 +367,14 @@ Figure&nbsp;7: Data: tracks color-coded by hidden state
 <p>M.3: Fit models to data and interpret the results</p>
 <p>The HMM output shows that red-footed boobies forage more near dolphin pods, supporting the hypothesis that they feed in association with spotted dolphins. As seen in <a href="#fig-fit-hmm-3" class="quarto-xref">Figure&nbsp;6</a>, the bird’s probability of staying in the transit state or switching into it plummets as it get close to a dolphin pod. On the other hand, when the bird is near a dolphin pod, it has a very high probability of being in the foraging state (i.e., switching into or staying into it).</p>
 <p>Additionally, comparing <a href="#fig-fit-hmm-4" class="quarto-xref">Figure&nbsp;7</a> and <a href="#fig-load-tracks" class="quarto-xref">Figure&nbsp;3</a> indicates that two of the bird’s three foraging periods happen in close proximity to a dolphin pod.</p>
+
 </section>
 
-</main>
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-felis2019" class="csl-entry" role="listitem">
+Felis, Jonathan J, Max F Czapanskiy, and Josh Adams. 2019. <span>“At-Sea Ranging Behavior of Seabirds Breeding in the Main Hawaiian Islands: Bio-Logger Data Release (Ver. 2.0, May 2020).”</span> <a href="https://doi.org/10.5066/P9NTEXM6">https://doi.org/10.5066/P9NTEXM6</a>.
+</div>
+</div></section></div></main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
