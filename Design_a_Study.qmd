@@ -176,10 +176,6 @@ plot(track_hmm, ask = FALSE)
 
 # Discussion
 
-Does the figure support or contradict my hypothesis?
-
-M.3: Fit models to data and interpret the results
-
 The HMM output shows that the bird forages more near dolphin pods, supporting the hypothesis that Red-footed Boobies feed in association with spotted dolphins. As seen in [@fig-fit-hmm-3], the bird's probability of staying in the transit state or switching into it plummets as it get close to a dolphin pod. On the other hand, when the bird is near a dolphin pod, it has a very high probability of being in the foraging state (i.e., switching into or staying into it).
 
 Additionally, comparing [@fig-fit-hmm-4] and [@fig-load-tracks] indicates that two of the bird's three foraging periods happen in close proximity to a dolphin pod.
